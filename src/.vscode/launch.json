@@ -1,0 +1,15 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug finance_manager",
+      "type": "debugpy",
+      "request": "launch",
+      "program": "${workspaceFolder}/application/main.py",
+      "console": "integratedTerminal",
+      "env": {
+        "PYTHONPATH": "${workspaceFolder}"
+      }
+    }
+  ]
+}
