@@ -1,5 +1,3 @@
-# repository/user_repository.py
-
 from domain.repositories.user_repository_interface import IUserRepository
 from domain.entities.user import User
 from typing import Optional
@@ -30,6 +28,27 @@ class UserRepository(IUserRepository):
         
         return user
  
+    def update(self, user: User) -> Optional[User]:
+        for i, existing_user in enumerate(self.users):
+            if existing_user.id == user.id:
+                
+                self.users[i] = user
+                return user
+            
+        return None
+
+    def delete(self, user_id: int) -> bool:
+        for i, user in enumerate(self.users):
+            if user.id == user_id:
+                del self.users[i]
+
+                return True
+        
+        return False
+
+    def get(self) -> list[User]:
+        return self.users
+    
     def get_by_id(self, user_id: int) -> Optional[User]:
         return next((user for user in self.users if user.id == user_id), None)
 
