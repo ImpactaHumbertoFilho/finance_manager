@@ -6,7 +6,19 @@ class IUserRepository(ABC):
     @abstractmethod
     def add(self, user: User) -> User:
         pass
+    
+    @abstractmethod
+    def update(self, id:int, user: User) -> User:
+        pass
+    
+    @abstractmethod
+    def delete(self, id:int) -> User:
+        pass
 
+    @abstractmethod
+    def get(self) -> Optional[list[User]]:
+        pass
+    
     @abstractmethod
     def get_by_id(self, user_id: int) -> Optional[User]:
         pass

@@ -29,7 +29,25 @@ class UserRepository(IUserRepository):
         self.users.append(user)
         
         return user
+    
+    def update(self, id:int, user: User) -> User:
+        for index, db_user in enumerate(self.users):
+            if db_user.id == id:
+                self.users[index] = user
+            
+                return user
+    
+    def delete(self, id:int) -> User:
+        for index, db_user in enumerate(self.users):
+            if db_user.id == id:
+                user = db_user
+                self.users.pop(index)
+        
+                return user
  
+    def get(self) -> Optional[list[User]]:
+        return self.users
+    
     def get_by_id(self, user_id: int) -> Optional[User]:
         return next((user for user in self.users if user.id == user_id), None)
 

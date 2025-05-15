@@ -15,6 +15,11 @@ class CreateUserUseCase(ICreateUserUseCase):
     def execute(self, input_data: CreateUserInput) -> CreateUserResult:
         user = User(name=input_data.name, email=input_data.email)
 
+        get_user_by_email_result = self.user_repository.get_by_email(input_data.email)
+
+        if(get_user_by_email_result):
+            return None
+        
         db_user = self.user_repository.add(user)
 
         return CreateUserResult(
