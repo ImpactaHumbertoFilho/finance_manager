@@ -59,6 +59,12 @@ def main():
     
     get_result = get_user_use_case.execute()
     print(get_result)
+    
+    try:
+        should_fail = CreateUserInput(name="John Doe", email="john.doe@example.com")
+        create_user_use_case.execute(should_fail)
+    except Exception as e:
+        print(f"Erro: {e}")
 
 # Executando o programa
 if __name__ == "__main__":
