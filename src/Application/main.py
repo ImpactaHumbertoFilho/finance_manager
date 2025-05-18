@@ -13,9 +13,17 @@ from domain.usecases.update_user.update_user_input import UpdateUserInput
 from usecases.user.update_user_use_case import UpdateUserUseCase
 from domain.usecases.create_user.create_user_input import CreateUserInput
 from usecases.user.create_user_use_case import CreateUserUseCase
-from repositories.user.user_repository import UserRepository
+from repositories.user_repository import UserRepository
+from repositories.sqlalchemy.models.user_model import Base
+from repositories.sqlalchemy.base import engine
 
-# Função para instalar todas as dependências
+def restart_database():
+    Base.metadata.drop_all(bind=engine)
+    Base.metadata.create_all(bind=engine)
+
+def create_database():
+    Base.metadata.create_all(bind=engine)
+
 def install_services():
     #Repository
     user_repository = UserRepository()  # Exemplo de repositório
@@ -33,8 +41,9 @@ def install_services():
         'get_user_use_case': get_user_use_case
     }
 
-# Função principal que orquestra a execução do programa
 def main():
+    restart_database()
+    
     # Instalando as dependências
     services = install_services()
 
@@ -44,28 +53,38 @@ def main():
     delete_user_use_case = services['delete_user_use_case']
     get_user_use_case = services['get_user_use_case']
 
-    # Exemplo de como utilizar o caso de uso
-    input_data = CreateUserInput(name="John Doe", email="john.doe@example.com")
-    result = create_user_use_case.execute(input_data)
-    print(result)
-    
-    update_data = UpdateUserInput(result.id, result.email, result.name)
-    update_result = update_user_use_case.execute(update_data)
-    print(update_result)
+    users = [
+        {"name": "Alice Smith", "email": "alice.smith@example.com"},
+        {"name": "Bob Johnson", "email": "bob.johnson@example.com"},
+        {"name": "Carol Williams", "email": "carol.williams@example.com"},
+        {"name": "David Brown", "email": "david.brown@example.com"},
+        {"name": "Eve Davis", "email": "eve.davis@example.com"},
+    ]
+
+    for user in users:
+        input_data = CreateUserInput(name=user["name"], email=user["email"])
+        create_user_use_case.execute(input_data)
     
     delete_data = DeleteUserInput(2)
     delete_result = delete_user_use_case.execute(delete_data)
     print(delete_result)
+    
+    input_data = CreateUserInput(name="John Doe", email="john.doe@example.com")
+    result = create_user_use_case.execute(input_data)
+    
+    update_data = UpdateUserInput(result.id, result.email, "Jane Doe")
+    update_result = update_user_use_case.execute(update_data)
+    print(update_result)
     
     get_result = get_user_use_case.execute()
     print(get_result)
     
     try:
         should_fail = CreateUserInput(name="John Doe", email="john.doe@example.com")
+        
         create_user_use_case.execute(should_fail)
     except Exception as e:
         print(f"Erro: {e}")
 
-# Executando o programa
 if __name__ == "__main__":
     main()
