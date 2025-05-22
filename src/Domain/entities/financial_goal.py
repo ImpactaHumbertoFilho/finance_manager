@@ -1,7 +1,7 @@
 class FinancialGoal:
-    def __init__(self, name: str, user_id: int, deadline:str, target_amount: float, current_amount: float = 0.0, id = None):
+    def __init__(self, name: str, user, deadline:str, target_amount: float, current_amount: float = 0.0, id = None):
         self.id = id
-        self.user_id = user_id
+        self._user = user
         self.name = name
         self.deadline = deadline
         self.__target_amount = target_amount
@@ -27,3 +27,7 @@ class FinancialGoal:
 
     def is_goal_achieved(self) -> bool:
         return self.__current_amount >= self.target_amount
+    
+    @property
+    def user(self):
+        return self._user

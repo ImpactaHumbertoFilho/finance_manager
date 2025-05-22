@@ -10,7 +10,7 @@ class FinancialGoalMapper:
             target_amount=entity.target_amount,
             current_amount=entity.get_current_amount(),
             deadline=entity.deadline,
-            user_id=entity.user_id
+            user_id=entity.user.id
         )
 
     @staticmethod
@@ -20,6 +20,6 @@ class FinancialGoalMapper:
             target_amount=model.target_amount,
             current_amount=model.current_amount,
             deadline=model.deadline,
-            user_id=model.user_id,
+            user=model.user,
             id=model.id
         )

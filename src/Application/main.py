@@ -5,8 +5,6 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 #fazer import depois dessa linha
-
-
 from domain.usecases.user.delete_user.delete_user_input import DeleteUserInput
 from domain.usecases.user.update_user.update_user_input import UpdateUserInput
 from domain.usecases.user.create_user.create_user_input import CreateUserInput
@@ -21,6 +19,7 @@ from usecases.financial_goal.create_financial_goal_use_case import CreateFinanci
 from repositories.user_repository import UserRepository
 from repositories.financial_goal_repository import FinancialGoalRepository
 
+#inicializando as models do banco de dados
 from repositories.sqlalchemy.models.category_model import CategoryModel
 from repositories.sqlalchemy.models.transaction_model import TransactionModel
 from repositories.sqlalchemy.models.financial_goal_model import FinancialGoalModel
@@ -37,8 +36,8 @@ def create_database():
 
 def install_services():
     #Repository
-    user_repository = UserRepository(SessionLocal)  # Exemplo de repositório
-    goal_repository = FinancialGoalRepository(SessionLocal)  # Exemplo de repositório
+    user_repository = UserRepository(SessionLocal)
+    goal_repository = FinancialGoalRepository(SessionLocal)
 
     #useCases
     create_user_use_case = CreateUserUseCase(user_repository)
@@ -46,7 +45,7 @@ def install_services():
     delete_user_use_case = DeleteUserUseCase(user_repository)
     get_user_use_case = GetUserUseCase(user_repository)
     
-    create_goal_use_case = CreateFinancialGoalUseCase(goal_repository)
+    create_goal_use_case = CreateFinancialGoalUseCase(goal_repository, user_repository)
     
     return {
         'create_user_use_case': create_user_use_case,
