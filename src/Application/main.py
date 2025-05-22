@@ -5,6 +5,7 @@ import os
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 #fazer import depois dessa linha
+from application.interface import create_goal_method, create_user_method, delete_user_method, get_goal_method, get_user_method, login, update_user_method
 from domain.usecases.user.delete_user.delete_user_input import DeleteUserInput
 from domain.usecases.user.update_user.update_user_input import UpdateUserInput
 from domain.usecases.user.create_user.create_user_input import CreateUserInput
@@ -57,55 +58,83 @@ def install_services():
     }
 
 def main():
-    restart_database()
+    create_database()
     
     # Instalando as dependências
     services = install_services()
 
-    # Acessando os casos de uso
-    create_user_use_case = services['create_user_use_case']
-    update_user_use_case = services['update_user_use_case']
-    delete_user_use_case = services['delete_user_use_case']
-    get_user_use_case = services['get_user_use_case']
-    
-    create_goal_use_case = services['create_goal_use_case']
+    # Criando um usuário
+    while True:
 
-    users = [
-        {"name": "Alice Smith", "email": "alice.smith@example.com"},
-        {"name": "Bob Johnson", "email": "bob.johnson@example.com"},
-        {"name": "Carol Williams", "email": "carol.williams@example.com"},
-        {"name": "David Brown", "email": "david.brown@example.com"},
-        {"name": "Eve Davis", "email": "eve.davis@example.com"},
-    ]
+        print("Bem vindo ao sistema de gerenciamento financeiro!")
+        print("1. Cadastre-se")
+        print("2. Já tem conta? Faça login")
+        answer = input("Digite a opção desejada: ")
 
-    for user in users:
-        input_data = CreateUserInput(name=user["name"], email=user["email"])
-        create_user_use_case.execute(input_data)
-    
-    delete_data = DeleteUserInput(2)
-    delete_result = delete_user_use_case.execute(delete_data)
-    print(delete_result)
-    
-    input_data = CreateUserInput(name="John Doe", email="john.doe@example.com")
-    result = create_user_use_case.execute(input_data)
-    
-    update_data = UpdateUserInput(result.id, "alterado@gmail.com", "Alterado Da Silva")
-    update_result = update_user_use_case.execute(update_data)
-    print(update_result)
+        if answer == '1':
+            print("Insira os dados:")
+            name = input("Digite seu nome: ")
+            email = input("Digite seu email: ")
+            password = input("Digite sua senha: ")
+            create_user_input = CreateUserInput(name, email, password)
+            create_user_method(create_user_input, services)
 
-    goal_data = CreateFinancialGoalInput('Viagem de natal', result.id, 5000.0, '2025-12-20', 1500.0)
-    goalResult = create_goal_use_case.execute(goal_data)
-    print(goalResult)
-    
-    get_result = get_user_use_case.execute()
-    print(get_result)
-    
-    try:
-        should_fail = CreateUserInput(name="John Doe", email="john.doe@example.com")
-        
-        create_user_use_case.execute(should_fail)
-    except Exception as e:
-        print(f"Erro: {e}")
+        elif answer == '2':
+            email = input("Digite seu email: ")
+            password = input("Digite sua senha: ")
+            user = login(services, email, password)
+
+        else:
+            print("Opção inválida. Tente novamente.")
+       
+        if user:
+            print(f"Bem-vindo, {user.name}!")
+            print("Escolha uma opção:")
+            print("1. Criar usuário")
+            print("2. Listar usuários")
+            print("3. Atualizar usuário")
+            print("4. Deletar usuário")
+            print("5. Criar meta financeira")
+            print("6. Listar metas financeiras")
+            print("0. Sair do sistema")
+            opcao = input("Digite a opção desejada: ")
+            
+            if opcao == '1':
+                print("Insira os dados:")
+                name = input("Digite o nome do usuário: ")
+                email = input("Digite o email do usuário: ")
+                create_user_input = CreateUserInput(name, email)
+                create_user_method(create_user_input, services)
+
+            elif opcao == '2':
+                get_user_method(services)
+
+            elif opcao == '3':
+                print("Insira os dados:")
+                name = input("Digite o novo nome do usuário: ")
+                email = input("Digite o novo email do usuário: ")
+                update_user_input = UpdateUserInput(id, name, email)
+                update_user_method(update_user_input, services)
+
+            elif opcao == '4':
+                print("Insira os dados:")
+                id = input("Digite o id do usuário: ")
+                delete_user_input = DeleteUserInput(id)
+                delete_user_method(delete_user_input, services)
+                
+            elif opcao == '5':
+                print("Insira os dados:")
+                name = input("Digite o nome da meta: ")
+                value = input("Digite o valor da meta: ")
+                user_id = input("Digite o id do usuário: ")
+                create_goal_input = CreateFinancialGoalInput(name, value, user_id)
+                create_goal_method(create_goal_input, services)
+                
+            elif opcao == '6':
+                get_goal_method(services)
+            elif opcao == '0':
+                print("Saindo do sistema...")
+                break
 
 if __name__ == "__main__":
     main()
