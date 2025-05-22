@@ -1,8 +1,8 @@
 
 from abc import ABC, abstractmethod
 
-from domain.usecases.update_user.update_user_input import UpdateUserInput
-from domain.usecases.update_user.update_user_result import UpdateUserResult
+from domain.usecases.user.update_user.update_user_input import UpdateUserInput
+from domain.usecases.user.update_user.update_user_result import UpdateUserResult
 
 class IUpdateUserUseCase(ABC):
     @abstractmethod

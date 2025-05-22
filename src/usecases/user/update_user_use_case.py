@@ -1,8 +1,8 @@
 from domain.entities.user import User
 from domain.repositories.user_repository_interface import IUserRepository
-from domain.usecases.update_user.update_user_input import UpdateUserInput
-from domain.usecases.update_user.update_user_result import UpdateUserResult
-from domain.usecases.update_user.update_user_use_case_interface import IUpdateUserUseCase
+from domain.usecases.user.update_user.update_user_input import UpdateUserInput
+from domain.usecases.user.update_user.update_user_result import UpdateUserResult
+from domain.usecases.user.update_user.update_user_use_case_interface import IUpdateUserUseCase
 
 
 class UpdateUserUseCase(IUpdateUserUseCase):

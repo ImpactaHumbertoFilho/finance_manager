@@ -1,6 +1,6 @@
-from domain.usecases.get_user.get_user_use_case_interface import IGetUserUseCase
+from domain.usecases.user.get_user.get_user_use_case_interface import IGetUserUseCase
 from domain.repositories.user_repository_interface import IUserRepository
-from domain.usecases.get_user.get_user_result import GetUserResult
+from domain.usecases.user.get_user.get_user_result import GetUserResult
 
 class GetUserUseCase(IGetUserUseCase):
     def __init__(self, user_repository:IUserRepository):

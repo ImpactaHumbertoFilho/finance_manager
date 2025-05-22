@@ -1,12 +1,49 @@
+from domain.repositories.financial_goal_repository_interface import IFinancialGoalRepository
 from repositories.sqlalchemy.base import SessionLocal
 from sqlalchemy.orm import Session
 
-class FinancialGoalRepository(IFinancialGoalRepository):
-    def __init__(self):
-        self.session: Session = SessionLocal()
+from repositories.sqlalchemy.mappers.financial_goal_mapper import FinancialGoalMapper
+from repositories.sqlalchemy.models.financial_goal_model import FinancialGoalModel
 
-    def add(self, transaction_category):
-        self.session.add(transaction_category)
-        self.session.commit()
-        self.session.refresh(transaction_category)
-        return transaction_category
+class FinancialGoalRepository(IFinancialGoalRepository):
+    def __init__(self, session_factory):
+        self.session_factory = session_factory
+
+    def add(self, financial_goal):
+        with self.session_factory() as session:
+            model = FinancialGoalMapper.to_model(financial_goal)  # CONVERTE para modelo SQLAlchemy
+            session.add(model)
+            session.commit()
+            session.refresh(model)
+        
+            return FinancialGoalMapper.to_domain(model)
+    
+    def update(self, financial_goal):
+        with self.session_factory() as session:
+            session.commit()
+            session.refresh(financial_goal)
+
+            return financial_goal
+    
+    def delete(self, financial_goal_id):
+        with self.session_factory() as session:
+            financial_goal = session.query(FinancialGoalModel).filter(FinancialGoalModel.id == financial_goal_id).first()
+            
+            if financial_goal:
+                session.delete(financial_goal)
+                session.commit()
+                return True
+            
+            return False
+    
+    def get(self):
+        with self.session_factory() as session:
+            financial_goals = session.query(FinancialGoalModel).all()
+            
+            return financial_goals
+
+    def get_by_id(self, financial_goal_id):
+        with self.session_factory() as session:
+            financial_goal = session.query(FinancialGoalModel).filter(FinancialGoalModel.id == financial_goal_id).first()
+            
+            return financial_goal

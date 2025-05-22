@@ -1,4 +1,4 @@
-from domain.usecases.get_user.get_user_result import GetUserResult
+from domain.usecases.user.get_user.get_user_result import GetUserResult
 from abc import ABC, abstractmethod
 
 class IGetUserUseCase(ABC):

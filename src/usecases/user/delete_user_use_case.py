@@ -1,6 +1,6 @@
-from domain.usecases.delete_user.delete_user_use_case_interface import IDeleteUserUseCase
-from domain.usecases.delete_user.delete_user_result import DeleteUserResult
-from domain.usecases.delete_user.delete_user_input import DeleteUserInput
+from domain.usecases.user.delete_user.delete_user_use_case_interface import IDeleteUserUseCase
+from domain.usecases.user.delete_user.delete_user_result import DeleteUserResult
+from domain.usecases.user.delete_user.delete_user_input import DeleteUserInput
 from domain.repositories.user_repository_interface import IUserRepository
 
 class DeleteUserUseCase(IDeleteUserUseCase):

@@ -6,16 +6,27 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 #fazer import depois dessa linha
 
-from domain.usecases.delete_user.delete_user_input import DeleteUserInput
+
+from domain.usecases.user.delete_user.delete_user_input import DeleteUserInput
+from domain.usecases.user.update_user.update_user_input import UpdateUserInput
+from domain.usecases.user.create_user.create_user_input import CreateUserInput
+from domain.usecases.financial_goal.create_financial_goal.create_financial_goal_input import CreateFinancialGoalInput
+
 from usecases.user.delete_user_use_case import DeleteUserUseCase
 from usecases.user.get_user_use_case import GetUserUseCase
-from domain.usecases.update_user.update_user_input import UpdateUserInput
 from usecases.user.update_user_use_case import UpdateUserUseCase
-from domain.usecases.create_user.create_user_input import CreateUserInput
 from usecases.user.create_user_use_case import CreateUserUseCase
+from usecases.financial_goal.create_financial_goal_use_case import CreateFinancialGoalUseCase
+
 from repositories.user_repository import UserRepository
-from repositories.sqlalchemy.models.user_model import Base
-from repositories.sqlalchemy.base import engine
+from repositories.financial_goal_repository import FinancialGoalRepository
+
+from repositories.sqlalchemy.models.category_model import CategoryModel
+from repositories.sqlalchemy.models.transaction_model import TransactionModel
+from repositories.sqlalchemy.models.financial_goal_model import FinancialGoalModel
+from repositories.sqlalchemy.models.user_model import UserModel
+
+from repositories.sqlalchemy.base import SessionLocal, engine, Base
 
 def restart_database():
     Base.metadata.drop_all(bind=engine)
@@ -26,7 +37,8 @@ def create_database():
 
 def install_services():
     #Repository
-    user_repository = UserRepository()  # Exemplo de repositório
+    user_repository = UserRepository(SessionLocal)  # Exemplo de repositório
+    goal_repository = FinancialGoalRepository(SessionLocal)  # Exemplo de repositório
 
     #useCases
     create_user_use_case = CreateUserUseCase(user_repository)
@@ -34,11 +46,15 @@ def install_services():
     delete_user_use_case = DeleteUserUseCase(user_repository)
     get_user_use_case = GetUserUseCase(user_repository)
     
+    create_goal_use_case = CreateFinancialGoalUseCase(goal_repository)
+    
     return {
         'create_user_use_case': create_user_use_case,
         'update_user_use_case': update_user_use_case,
         'delete_user_use_case': delete_user_use_case,
-        'get_user_use_case': get_user_use_case
+        'get_user_use_case': get_user_use_case,
+
+        'create_goal_use_case': create_goal_use_case
     }
 
 def main():
@@ -52,6 +68,8 @@ def main():
     update_user_use_case = services['update_user_use_case']
     delete_user_use_case = services['delete_user_use_case']
     get_user_use_case = services['get_user_use_case']
+    
+    create_goal_use_case = services['create_goal_use_case']
 
     users = [
         {"name": "Alice Smith", "email": "alice.smith@example.com"},
@@ -72,9 +90,13 @@ def main():
     input_data = CreateUserInput(name="John Doe", email="john.doe@example.com")
     result = create_user_use_case.execute(input_data)
     
-    update_data = UpdateUserInput(result.id, result.email, "Jane Doe")
+    update_data = UpdateUserInput(result.id, "alterado@gmail.com", "Alterado Da Silva")
     update_result = update_user_use_case.execute(update_data)
     print(update_result)
+
+    goal_data = CreateFinancialGoalInput('Viagem de natal', result.id, 5000.0, '2025-12-20', 1500.0)
+    goalResult = create_goal_use_case.execute(goal_data)
+    print(goalResult)
     
     get_result = get_user_use_case.execute()
     print(get_result)

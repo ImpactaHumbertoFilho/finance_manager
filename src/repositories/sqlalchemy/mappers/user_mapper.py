@@ -4,7 +4,7 @@ from repositories.sqlalchemy.models.user_model import UserModel
 class UserMapper:
     @staticmethod
     def to_domain(model: UserModel) -> User:
-        return User(id=model.id, name=model.name, email=model.email)
+        return User(name=model.name, email=model.email, transactions = model.transactions, goals=model.goals, id=model.id)
 
     @staticmethod
     def to_model(entity: User) -> UserModel:
