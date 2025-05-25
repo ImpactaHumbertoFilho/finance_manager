@@ -1,3 +1,5 @@
+from typing import Optional
+from domain.entities.financial_goal import FinancialGoal
 from domain.usecases.financial_goal.create_financial_goal.create_financial_goal_output import CreateFinancialGoalOutput
 from domain.usecases.financial_goal.create_financial_goal.create_financial_goal_input import CreateFinancialGoalInput
 from abc import ABC, abstractmethod
@@ -16,7 +18,7 @@ class IFinancialGoalRepository(ABC):
         pass
     
     @abstractmethod
-    def get(self):
+    def get(self, user_id: int) -> Optional[list[FinancialGoal]]:
         pass
 
     @abstractmethod

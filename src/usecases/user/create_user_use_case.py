@@ -13,10 +13,12 @@ class CreateUserUseCase(ICreateUserUseCase):
         self.user_repository = user_repository
 
     def execute(self, input_data: CreateUserInput) -> CreateUserResult:
-        user = User(name=input_data.name, email=input_data.email)
+        user = User(name=input_data.name, email=input_data.email, password=input_data.password)
+        
+        if(input_data.password != input_data.verify_password):
+            raise ValueError("As senhas não conferem.")
         
         get_user_by_email_result = self.user_repository.get_by_email(input_data.email)
-        
         if(get_user_by_email_result):
             raise UsuarioJaCadastradoException("Usuário já cadastrado com esse e-mail.")
         

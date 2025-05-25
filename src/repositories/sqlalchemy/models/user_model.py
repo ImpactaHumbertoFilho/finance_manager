@@ -8,6 +8,7 @@ class UserModel(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
     email = Column(String(100), nullable=False, unique=True)
+    password = Column(String(20), nullable=False)
 
     transactions = relationship("TransactionModel", back_populates="user", cascade="all, delete-orphan")
     goals = relationship("FinancialGoalModel", back_populates="user", cascade="all, delete-orphan")

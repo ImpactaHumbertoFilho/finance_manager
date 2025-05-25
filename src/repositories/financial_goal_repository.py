@@ -1,3 +1,4 @@
+from domain.entities.financial_goal import FinancialGoal
 from domain.repositories.financial_goal_repository_interface import IFinancialGoalRepository
 from repositories.sqlalchemy.base import SessionLocal
 from sqlalchemy.orm import Session
@@ -36,11 +37,11 @@ class FinancialGoalRepository(IFinancialGoalRepository):
             
             return False
     
-    def get(self):
+    def get(self, user_id):
         with self.session_factory() as session:
-            financial_goals = session.query(FinancialGoalModel).all()
+            financial_goals: list[FinancialGoalModel] = session.query(FinancialGoalModel).filter(FinancialGoalModel.user_id == user_id).all()
             
-            return financial_goals
+            return [FinancialGoal(goal.name, goal.user, goal.deadline, goal.target_amount, goal.current_amount, goal.id ) for goal in financial_goals]
 
     def get_by_id(self, financial_goal_id):
         with self.session_factory() as session:

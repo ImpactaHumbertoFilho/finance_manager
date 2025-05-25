@@ -6,6 +6,7 @@ class GetUserResult():
         users = []
         
         for user in self.users:
+            users.append(f'id |   nome   |   email')
             users.append(f'{user.id:03d}| {user.name} | {user.email}')
 
             for transaction in user.list_transactions():
