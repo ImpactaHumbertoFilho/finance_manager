@@ -12,7 +12,7 @@ class GoalRepository(IGoalRepository):
 
     def add(self, goal):
         with self.session_factory() as session:
-            model = GoalMapper.to_model(goal)  # CONVERTE para modelo SQLAlchemy
+            model = GoalMapper.to_model(goal)
             session.add(model)
             session.commit()
             session.refresh(model)
@@ -21,10 +21,19 @@ class GoalRepository(IGoalRepository):
     
     def update(self, goal):
         with self.session_factory() as session:
-            session.commit()
-            session.refresh(goal)
+            model = session.query(GoalModel).filter(GoalModel.id == goal.id).first()
+            if not model:
+                return None
+            
+            model.name = goal.name
+            model.user_id = goal.user_id
+            model.deadline = goal.deadline
+            model.target_amount = goal.target_amount
+            model.current_amount = goal.current_amount
 
-            return goal
+            session.commit()
+            session.refresh(model)
+            return GoalMapper.to_domain(model)
     
     def delete(self, goal_id):
         with self.session_factory() as session:
@@ -47,7 +56,7 @@ class GoalRepository(IGoalRepository):
         with self.session_factory() as session:
             goal = session.query(GoalModel).filter(GoalModel.id == goal_id).first()
             
-            return goal
+            return GoalMapper.to_domain(goal)
         
     def get_by_user_id(self, user_id):
         with self.session_factory() as session:
