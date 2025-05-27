@@ -1,8 +1,8 @@
 from domain.entities.transaction import Transaction
-from domain.entities.financial_goal import FinancialGoal
+from domain.entities.goal import Goal
 
 class User:
-    def __init__(self, name: str, email: str, password: str, transactions: list[Transaction] = [], goals:list[FinancialGoal] = [], id: int = None):
+    def __init__(self, name: str, email: str, password: str, transactions: list[Transaction] = [], goals:list[Goal] = [], id: int = None):
         self.id = id
         self.name = name
         self.email = email

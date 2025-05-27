@@ -1,12 +1,5 @@
-class DeleteUserResult():
-    def __init__(self, user_id: int, name: str, email: str):
-        self.id = user_id
-        self.name = name
-        self.email = email
+from domain.usecases.base.base_result import BaseResult
 
-    def __str__(self):
-        return (
-            f"Id: {self.id}\n"
-            f"Name: {self.name}\n"
-            f"Email: {self.email}"
-        )
+class DeleteUserResult(BaseResult):
+    def __init__(self, success: bool, message: str, data=None):
+        super().__init__(success, message, data)

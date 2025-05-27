@@ -2,8 +2,8 @@ from sqlalchemy import Column, ForeignKey, Integer, String
 from repositories.sqlalchemy.base import Base
 from sqlalchemy.orm import relationship
 
-class FinancialGoalModel(Base):
-    __tablename__ = 'financial_goals'
+class GoalModel(Base):
+    __tablename__ = 'goals'
 
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(100), nullable=False)
@@ -15,4 +15,4 @@ class FinancialGoalModel(Base):
     user = relationship("UserModel", back_populates="goals")
     
     def __repr__(self):
-        return f"<FinancialGoalModel(id={self.id}, name='{self.name}', target_amount={self.target_amount}, current_amount={self.current_amount}, deadline='{self.deadline}', user_id={self.user_id})>"
+        return f"<GoalModel(id={self.id}, name='{self.name}', target_amount={self.target_amount}, current_amount={self.current_amount}, deadline='{self.deadline}', user_id={self.user_id})>"

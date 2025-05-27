@@ -1,10 +1,10 @@
-from domain.entities.financial_goal import FinancialGoal
-from repositories.sqlalchemy.models.financial_goal_model import FinancialGoalModel
+from domain.entities.goal import Goal
+from repositories.sqlalchemy.models.goal_model import GoalModel
 
-class FinancialGoalMapper:
+class GoalMapper:
     @staticmethod
-    def to_model(entity: FinancialGoal) -> FinancialGoalModel:
-        return FinancialGoalModel(
+    def to_model(entity: Goal) -> GoalModel:
+        return GoalModel(
             id=entity.id,
             name=entity.name,
             target_amount=entity.target_amount,
@@ -14,8 +14,8 @@ class FinancialGoalMapper:
         )
 
     @staticmethod
-    def to_domain(model: FinancialGoalModel) -> FinancialGoal:
-        return FinancialGoal(
+    def to_domain(model: GoalModel) -> Goal:
+        return Goal(
             name=model.name,
             target_amount=model.target_amount,
             current_amount=model.current_amount,

@@ -11,7 +11,7 @@ class UserModel(Base):
     password = Column(String(20), nullable=False)
 
     transactions = relationship("TransactionModel", back_populates="user", cascade="all, delete-orphan")
-    goals = relationship("FinancialGoalModel", back_populates="user", cascade="all, delete-orphan")
+    goals = relationship("GoalModel", back_populates="user", cascade="all, delete-orphan")
 
     def __repr__(self):
         return f"<UserModel(id={self.id}, name='{self.name}', email='{self.email}')>"

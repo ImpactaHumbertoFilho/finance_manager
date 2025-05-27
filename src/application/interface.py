@@ -1,11 +1,13 @@
-from domain.usecases.financial_goal.create_financial_goal.create_financial_goal_input import CreateFinancialGoalInput
+from domain.usecases.goal.add_goal_amount.add_goal_amount_input import AddGoalAmountInput
+from domain.usecases.goal.create_goal.create_goal_input import CreateGoalInput
+from domain.usecases.goal.update_goal.update_goal_input import UpdateGoalInput
 from domain.usecases.user.create_user.create_user_input import CreateUserInput
 from domain.usecases.user.delete_user.delete_user_input import DeleteUserInput
 from domain.usecases.user.update_user.update_user_input import UpdateUserInput
 
 box_width = 80
 
-def center_text(text, width):
+def center_text(text: str, width):
     return text.center(width - 4)
 
 def print_sub_menu_box(title, options, isInsideSubMenu=False, isLastSubMenu=True):
@@ -73,25 +75,57 @@ def handle_update_user(services, user):
     update_user_input = UpdateUserInput(user.id, email, name)
     
     update_user_use_case = services['update_user_use_case']
-    update_user_use_case.execute(update_user_input)
+    result = update_user_use_case.execute(update_user_input)
+    
+    print(result)
 
 def handle_delete_user(services, user):
     print("Deletando o usuario e seus dados...")
 
     delete_user_input = DeleteUserInput(user.id)
     delete_user_use_case = services['delete_user_use_case']
-    delete_user_use_case.execute(delete_user_input)
+    result = delete_user_use_case.execute(delete_user_input)
+
+    print(result)
 
 def handle_create_goal(services, user):
     name = input("Digite o nome da meta: ")
     value = float(input("Digite o valor da meta: "))
     date = input("Digite a data da meta (YYYY-MM-DD): ")
 
-    create_goal_input = CreateFinancialGoalInput(name, user.id, value, date)
+    create_goal_input = CreateGoalInput(name, user.id, value, date)
     
     create_goal_use_case = services['create_goal_use_case']
     create_goal_use_case.execute(create_goal_input)
     print("Meta criada com sucesso!")
+
+def handle_update_goal(services, goal_id):
+    name = input("Digite o nome da meta: ")
+    value = float(input("Digite o valor da meta: "))
+    date = input("Digite a data da meta (YYYY-MM-DD): ")
+
+    create_goal_input = UpdateGoalInput(goal_id, name, date, value)
+    
+    create_goal_use_case = services['update_goal_use_case']
+    result = create_goal_use_case.execute(create_goal_input)
+
+    print(result)
+
+def handle_delete_goal(services, goal_id):
+    create_goal_use_case = services['delete_goal_use_case']
+    result = create_goal_use_case.execute(goal_id)
+
+    print(result)
+
+def handle_add_goal_amount(services, goal_id):
+    value = float(input("Digite o valor a ser adicionado: "))
+
+    create_goal_input = AddGoalAmountInput(goal_id, value)
+    
+    create_goal_use_case = services['add_goal_amount_use_case']
+    result = create_goal_use_case.execute(create_goal_input)
+
+    print(result)
 
 def handle_get_goals(services, user):
     get_goals_use_case = services['get_goals_use_case']
@@ -119,13 +153,22 @@ def goals_menu(services, user):
     print_sub_menu_box(f"Selecione o que deseja fazer:", [
         "Adicionar meta",
         "Aletrar meta"
-    ], True)
+    ], isInsideSubMenu=True)
+
+    return goals
 
 def goal_menu():
     print_sub_menu_box("Selecione o que deseja fazer:", [
         "Adicionar valor",
         "Alterar meta",
         "Deletar meta"
+    ])
+
+def transactions_menu():
+    print_sub_menu_box("Selecione o que deseja fazer:", [
+        "Adicionar transação",
+        "Listar transações",
+        "Gerar relatório",
     ])
 
 def start_app(services):
@@ -162,11 +205,11 @@ def start_app(services):
         index_menu(user)
 
         try:
-            opcao = input("Digite a opção desejada: ")
+            option = input("Digite a opção desejada: ")
             
-            if opcao == '1':
+            if option == '1':
                 handle_update_user(services, user)
-            elif opcao == '2':
+            elif option == '2':
                 print("Confirme que voce realmente quer deletar o usuario! (s/n)")
 
                 confirm = input("Digite 's' para confirmar ou 'n' para cancelar: ")
@@ -177,46 +220,45 @@ def start_app(services):
                 else:
                     print("Operação cancelada.")
 
-            elif opcao == '3':
+            elif option == '3':
                 while True:
-                    goals_menu(services, user)
+                    transactions_menu(services, user)
                     try:
-                        opcao = input("Digite a opção desejada: ")
-
-                        if opcao == '1':
-                            handle_create_goal(services, user)
-                        elif opcao == '2':
-                            opcao = input("Digite a meta que deseja alterar: ")
-                            goal_menu()
+                        option = input("Digite a opção desejada: ")
 
                     except Exception as e:
                         print(f"Erro: {e}")
                         print("Tente novamente.")
             
-            elif opcao == '4':
+            elif option == '4':
                 while True:
-                    goals_menu(services, user)
+                    goals = goals_menu(services, user)
                     try:
-                        opcao = input("Digite a opção desejada: ")
+                        option = input("Digite a opção desejada: ")
 
-                        if opcao == '1':
+                        if option == '1':
                             handle_create_goal(services, user)
-                        elif opcao == '2':
-                            print("Deletar meta (funcionalidade não implementada)")
-                            # Aqui você pode implementar a lógica para deletar uma meta
-                        elif opcao == '3':
-                            print("Adicionar valor a meta (funcionalidade não implementada)")
-                            # Aqui você pode implementar a lógica para adicionar valor a uma meta
-                        elif opcao == '4':
-                            handle_get_goals(services, user)
-                        elif opcao == '0':
+                        elif option == '2':
+                            goal_menu()
+                            option = input("Digite a opção desejada: ")
+                            meta = int(input("Digite a meta desejada: "))
+                            if option == '1':
+                                handle_add_goal_amount(services, goals[meta - 1].id)
+                            if option == '2':
+                                handle_update_goal(services, goals[meta - 1].id)
+                            elif option == '3':
+                                handle_delete_goal(services, goals[meta - 1].id)
+                            else:
+                                print("Opção inválida. Tente novamente.")
+                        
+                        elif option == '0':
                             break
                         else:
                             print("Opção inválida. Tente novamente.")
                     except Exception as e:
                         print(f"Erro: {e}")
                         print("Tente novamente.")
-            elif opcao == '0':
+            elif option == '0':
                 print("Saindo do sistema...")
                 break
             else:

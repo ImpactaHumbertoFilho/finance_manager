@@ -14,9 +14,7 @@ class DeleteUserUseCase(IDeleteUserUseCase):
             return None
         
         db_user = self.user_repository.delete(input_data.id)
+        if not db_user:
+            return DeleteUserResult.failure("Erro ao deletar o usuário")
 
-        return DeleteUserResult(
-            user_id=db_user.id,
-            name=db_user.name,
-            email=db_user.email
-        )
+        return DeleteUserResult.success("Usuario deletado com sucesso")

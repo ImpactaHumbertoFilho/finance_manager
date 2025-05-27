@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 
-class IGetFinancialGoalsUseCase(ABC):
+class IGetGoalsUseCase(ABC):
     @abstractmethod
     def execute(self, user_id: str) -> list:
         """

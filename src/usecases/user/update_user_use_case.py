@@ -18,5 +18,7 @@ class UpdateUserUseCase(IUpdateUserUseCase):
             return None
         
         updated_user = self.user_repository.update(input.Id, user)
+        if not updated_user:
+            return UpdateUserResult.failure("Erro ao atualizar o usuário")
         
-        return UpdateUserResult(updated_user.id, updated_user.name, updated_user.email)
+        return UpdateUserResult.success("Usuario atualizado com sucesso")

@@ -1,4 +1,4 @@
-class FinancialGoal:
+class Goal:
     def __init__(self, name: str, user, deadline:str, target_amount: float, current_amount: float = 0.0, id = None):
         self.id = id
         self._user = user
@@ -14,12 +14,17 @@ class FinancialGoal:
     @target_amount.setter
     def target_amount(self, value: float):
         if value < 0:
-            raise ValueError("Target amount cannot be negative.")
+            raise ValueError("Valor da meta não pode ser negativo.")
+        
+        if value < self.__current_amount:
+            raise ValueError("Valor da meta não pode ser menor que o valor atual.")
+
         self.__target_amount = value
 
     def add_contribution(self, amount: float):
         if amount < 0:
-            raise ValueError("Contribution amount cannot be negative.")
+            raise ValueError("Contribuição não pode ser negativa.")
+        
         self.__current_amount += amount
 
     def get_current_amount(self) -> float:
