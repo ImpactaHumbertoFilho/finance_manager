@@ -19,17 +19,16 @@ class GoalRepository(IGoalRepository):
         
             return GoalMapper.to_domain(model)
     
-    def update(self, goal):
+    def update(self, goal: Goal):
         with self.session_factory() as session:
             model = session.query(GoalModel).filter(GoalModel.id == goal.id).first()
             if not model:
                 return None
             
             model.name = goal.name
-            model.user_id = goal.user_id
             model.deadline = goal.deadline
             model.target_amount = goal.target_amount
-            model.current_amount = goal.current_amount
+            model.current_amount = goal.get_current_amount()
 
             session.commit()
             session.refresh(model)

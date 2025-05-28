@@ -25,6 +25,12 @@ class Goal:
         if amount < 0:
             raise ValueError("Contribuição não pode ser negativa.")
         
+        if self.is_goal_achieved():
+            raise ValueError("Meta já foi alcançada.")
+        
+        if self.__current_amount + amount > self.__target_amount:
+            raise ValueError("Contribuição excede o valor da meta.")
+        
         self.__current_amount += amount
 
     def get_current_amount(self) -> float:

@@ -10,9 +10,23 @@ box_width = 80
 def center_text(text: str, width):
     return text.center(width - 4)
 
+def print_error_menu_box(title, error, isInsideSubMenu=False):
+    print()
+    if not isInsideSubMenu:
+        print("+" + "-" * (box_width - 2) + "+")
+    
+    print("| " + center_text(title, box_width) + " |")
+    print("+" + "-" * (box_width - 2) + "+")
+    print("| " + center_text(str(error), box_width) + " |")
+    print("+" + "-" * (box_width - 2) + "+")
+    print("| " + center_text("Tente novamente", box_width) + " |")
+    print("+" + "-" * (box_width - 2) + "+")
+    print()
+
 def print_sub_menu_box(title, options, isInsideSubMenu=False, isLastSubMenu=True):
     if not isInsideSubMenu:
         print("+" + "-" * (box_width - 2) + "+")
+    
     print("| " + center_text(title, box_width) + " |")
     print("+" + "-" * (box_width - 2) + "+")
     
@@ -197,8 +211,7 @@ def start_app(services):
             else:
                 print("Usuário não encontrado. Tente novamente.")
         except Exception as e:
-            print(f"Erro: {e}")
-            print("Tente novamente.")
+            print_error_menu_box("Erro ao realizar login/cadastro", e)
 
     # Loop para o menu principal
     while user:
@@ -227,8 +240,7 @@ def start_app(services):
                         option = input("Digite a opção desejada: ")
 
                     except Exception as e:
-                        print(f"Erro: {e}")
-                        print("Tente novamente.")
+                        print_error_menu_box("Erro ao realizar operações de transação", e)
             
             elif option == '4':
                 while True:
@@ -240,14 +252,16 @@ def start_app(services):
                             handle_create_goal(services, user)
                         elif option == '2':
                             goal_menu()
-                            option = input("Digite a opção desejada: ")
-                            meta = int(input("Digite a meta desejada: "))
-                            if option == '1':
-                                handle_add_goal_amount(services, goals[meta - 1].id)
-                            if option == '2':
-                                handle_update_goal(services, goals[meta - 1].id)
-                            elif option == '3':
-                                handle_delete_goal(services, goals[meta - 1].id)
+                            
+                            goal_option = input("Digite a opção desejada: ")
+                            goal = int(input("Digite a meta desejada: "))
+                            
+                            if goal_option == '1':
+                                handle_add_goal_amount(services, goals[goal - 1].id)
+                            elif goal_option == '2':
+                                handle_update_goal(services, goals[goal - 1].id)
+                            elif goal_option == '3':
+                                handle_delete_goal(services, goals[goal - 1].id)
                             else:
                                 print("Opção inválida. Tente novamente.")
                         
@@ -256,13 +270,11 @@ def start_app(services):
                         else:
                             print("Opção inválida. Tente novamente.")
                     except Exception as e:
-                        print(f"Erro: {e}")
-                        print("Tente novamente.")
+                        print_error_menu_box("Erro ao realizar operação de meta", e)
             elif option == '0':
                 print("Saindo do sistema...")
                 break
             else:
                 print("Opção inválida. Tente novamente.")
         except Exception as e:
-            print(f"Erro: {e}")
-            print("Tente novamente.")
+            print_error_menu_box("Erro ao realizar operação", e)

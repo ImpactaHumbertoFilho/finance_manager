@@ -14,11 +14,11 @@ class AddGoalAmountUseCase(IAddGoalAmountUseCase):
 
         if not goal_id or amount is None:
             raise ValueError("Valor é obrigatorio")
-
+        
         goal: Goal = self.goal_repository.get_by_id(goal_id)
         if not goal:
             raise ValueError("Meta não encontrada")
-
+        
         goal.add_contribution(input_data.amount)
 
         updated_goal = self.goal_repository.update(goal)

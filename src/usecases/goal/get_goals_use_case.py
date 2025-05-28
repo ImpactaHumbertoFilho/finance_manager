@@ -9,4 +9,4 @@ class GetGoalsUseCase(IGetGoalsUseCase):
     def execute(self, user_id: str) -> list:
         result = self.goals_repository.get(user_id)
         
-        return GetGoalsOutput([GetGoalsOutputItem(goal.id, goal.name, goal.user, goal.get_current_amount(), goal.target_amount, goal.deadline) for goal in result])
+        return GetGoalsOutput([GetGoalsOutputItem(goal.id, goal.name, goal.user, goal.get_current_amount(), goal.target_amount, goal.deadline, goal.is_goal_achieved()) for goal in result])
