@@ -18,3 +18,5 @@ class TransactionModel(Base):
     user = relationship("UserModel", back_populates="transactions")
     category = relationship("CategoryModel", back_populates="transactions")
     payment_method = relationship("PaymentMethodModel", back_populates="transactions")
+
+    installments = relationship("InstallmentModel", back_populates="transaction", cascade="all, delete-orphan")

@@ -11,10 +11,10 @@ class TransactionMapper:
             value=model.value,
             description=model.description,
             date=model.date,
-            type_=model.type,
-            user_id=model.user_id,
-            category_id=model.category_id,
-            payment_method_id=model.payment_method_id
+            type=model.type,
+            user=model.user,
+            category=model.category,
+            payment_method=model.payment_method
         )
 
     @staticmethod

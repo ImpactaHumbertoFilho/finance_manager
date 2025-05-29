@@ -24,7 +24,7 @@ class Transaction:
         else:
             due_date = self.date
         
-        self.installments.append(Installment(number, amount, due_date))
+        self.installments.append(Installment(number, amount, due_date, self.id))
 
     @property
     def user(self):

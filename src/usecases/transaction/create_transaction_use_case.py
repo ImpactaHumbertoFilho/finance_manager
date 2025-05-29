@@ -4,13 +4,15 @@ from domain.repositories.transaction_repository_interface import ITransactionRep
 from domain.repositories.category_repository_interface import ICategoryRepository
 from domain.repositories.user_repository_interface import IUserRepository
 from domain.entities.transaction import Transaction
+from repositories.installment_repository import InstallmentRepository
 
 class CreateTransactionUseCase:
-    def __init__(self, transaction_repository: ITransactionRepository, user_repository: IUserRepository, category_repository=ICategoryRepository, payment_method_repository=IPaymentMethodRepository):
+    def __init__(self, installment_repository: InstallmentRepository, transaction_repository: ITransactionRepository, user_repository: IUserRepository, category_repository=ICategoryRepository, payment_method_repository=IPaymentMethodRepository):
         self.transaction_repository = transaction_repository
         self.user_repository = user_repository
         self.category_repository = category_repository
         self.payment_method_repository = payment_method_repository
+        self.installment_repository = installment_repository
 
     def execute(self, transaction_data: CreateTransactionInput):
         user = self.user_repository.get_by_id(transaction_data.user_id)
@@ -35,14 +37,19 @@ class CreateTransactionUseCase:
             payment_method=payment,
         )
 
+        result = self.transaction_repository.add(transaction)
+        if not result:
+            raise Exception("Error ao adicionar transação")
+
+        transaction.id = result.id
         for installment in transaction_data.installments:
             transaction.add_installment(
                 number=installment.number,
                 amount=installment.amount
             )
 
-        result = self.transaction_repository.add(transaction)
+        result = self.installment_repository.add_many(transaction.installments)
         if not result:
-            raise Exception("Failed to create transaction")
-
+            raise Exception("Error ao adicionar parcelas da transação")
+        
         return transaction

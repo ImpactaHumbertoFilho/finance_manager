@@ -169,8 +169,6 @@ def handle_create_transaction(services, user):
     #payment_methods_menu(services)
     payment_method = input("Digite o método de pagamento da transação: ")
 
-
-
     print_sub_menu_box("parcelas", ["À vista", "Parcelado"], isLastSubMenu= False)
     installment_option = input("Digite a opção de parcelas: ")
     if installment_option == '1':
@@ -205,8 +203,7 @@ def list_transactions(services, user):
         print_sub_menu_box("Suas transações", ["Nenhuma transação cadastrada ainda"], isLastSubMenu=False)
         return
 
-    for transaction in transactions:
-        print(transaction)
+    print_sub_menu_box("Suas transações", transactions, isLastSubMenu=False)
 
 def start_menu():
     print_menu_box("Sistema de Gerenciamento Financeiro", "Escolha uma opção:", [

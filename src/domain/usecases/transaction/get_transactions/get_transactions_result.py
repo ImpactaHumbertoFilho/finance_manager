@@ -11,7 +11,7 @@ class GetTransactionItem:
         self.installments = installment
 
     def __str__(self):
-        return f"\'{self.description}\' dia {self.date} no {self._payment_method}, R$ {self.value:.2f} em {len(self.installments)}x vezes"
+        return f"\'{self.description}\' dia {self.date} no {self._payment_method.name}, R$ {self.value:.2f} em {len(self.installments)}x vezes"
 
 class GetTransactionsResult:
     def __init__(self, transactions):

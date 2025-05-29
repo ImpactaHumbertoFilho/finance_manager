@@ -1,5 +1,6 @@
 from application.interface import start_app
 
+from repositories.installment_repository import InstallmentRepository
 from repositories.transaction_repository import TransactionRepository
 from usecases.category.get_category_use_case import GetCategoryUseCase
 from usecases.user.create_user_use_case import CreateUserUseCase
@@ -29,6 +30,7 @@ from repositories.sqlalchemy.models.category_model import CategoryModel
 from repositories.sqlalchemy.models.transaction_model import TransactionModel
 from repositories.sqlalchemy.models.goal_model import GoalModel
 from repositories.sqlalchemy.models.user_model import UserModel
+from repositories.sqlalchemy.models.installment_model import InstallmentModel
 
 #inicializando o banco de dados
 from repositories.sqlalchemy.base import SessionLocal, engine, Base
@@ -40,6 +42,7 @@ def install_services():
     transaction_repository = TransactionRepository(SessionLocal)
     category_repository = CategoryRepository(SessionLocal)
     payment_method_repository = PaymentMethodRepository(SessionLocal)
+    installment_repository = InstallmentRepository(SessionLocal)
     
     #useCases
     #User Use Cases
@@ -56,7 +59,7 @@ def install_services():
     get_goals_use_case = GetGoalsUseCase(goal_repository)
     
     #transaction Use Cases
-    create_transaction_use_case = CreateTransactionUseCase(transaction_repository, user_repository, category_repository, payment_method_repository)
+    create_transaction_use_case = CreateTransactionUseCase(installment_repository, transaction_repository, user_repository, category_repository, payment_method_repository)
     update_transaction_use_case = UpdateTransactionUseCase(transaction_repository, user_repository)
     get_transactions_use_case = GetTransactionsUseCase(transaction_repository)
     
@@ -89,13 +92,15 @@ def install_services():
         'create_payment_method_use_case': create_payment_method_use_case,
     }
 
-def restart_database(services):
+def restart_database():
     Base.metadata.drop_all(bind=engine)
     create_database()
-    add_data(services)
+    return 2
 
 def create_database():
     Base.metadata.create_all(bind=engine)
+
+    return 1
 
 def add_data(services):
     try:
@@ -130,13 +135,14 @@ def add_data(services):
 
 def main():
     # Conectando/Iniciando o banco de dados
-    #create_database()
-    restart_database(services)
-    
+    option = create_database()
+    #option = restart_database()
+
     # Instalando as dependências
     services = install_services()
-
-    add_data(services)
+    
+    if option == 2:
+        add_data(services)
 
     # Iniciando a aplicação
     start_app(services)
