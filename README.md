@@ -29,16 +29,19 @@ Essa separação permite:
 - Reaproveitamento e manutenção mais fáceis
 - Independência de framework/banco/entrada
 
+Nosso banco de dados:
+![{DCC82FCB-6E46-475F-B8CA-98BD499C543A}](https://github.com/user-attachments/assets/776fefc7-0ffc-4005-90ea-4701f80c65f4)
+
 ---
 
 ## 🧠 Funcionalidades
 
-- [x] Cadastro de receitas e despesas
-- [x] Classificação por categorias
-- [x] Enumeração padronizada de formas de pagamento
+- [x] Cadastro de usuario
 - [x] Criação e acompanhamento de metas financeiras
+- [x] Criação de transações
 - [x] Listagem e filtragem de transações por usuário
-- [ ] Atualização e exclusão de registros
+- [x] Detalhamento de transação com suas parcelas
+- [x] Atualização e exclusão de registros
 - [ ] Relatórios resumidos (em breve)
 
 ---
@@ -58,8 +61,9 @@ Essa separação permite:
 1. Clone o repositório:
 
 ```bash
-git clone https://github.com/seu-usuario/gerenciador-financeiro.git
-cd gerenciador-financeiro
+git clone https://github.com/ImpactaHumbertoFilho/finance_manager.git
+cd finance_manager
+cd src
 ```
 
 2. Instale as dependências:
@@ -69,21 +73,10 @@ pip install -r requirements.txt
 ```
 
 3. Rode o projeto:
-
 ```bash
-python application/main.py
+#Certifique que esta na pasta "src"
+python -m application/main.py
 ```
-
----
-
-## 🧪 Testes
-
-```bash
-pytest
-```
-
-Os testes cobrem entidades do domínio, regras de negócio e repositórios em memória.
-
 ---
 
 ## 👥 Integrantes
