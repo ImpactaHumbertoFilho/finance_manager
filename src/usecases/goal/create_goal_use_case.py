@@ -24,7 +24,6 @@ class CreateGoalUseCase(ICreateGoalUseCase):
             user=user,
             name=input_data.name,
             target_amount=input_data.target_amount,
-            current_amount=input_data.current_amount,
             deadline=input_data.deadline
         )
 

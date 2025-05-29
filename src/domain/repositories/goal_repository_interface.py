@@ -6,7 +6,7 @@ from abc import ABC, abstractmethod
 
 class IGoalRepository(ABC):
     @abstractmethod
-    def add(self, goal: CreateGoalInput) -> CreateGoalOutput:
+    def add(self, goal: CreateGoalInput):
         pass
     
     @abstractmethod

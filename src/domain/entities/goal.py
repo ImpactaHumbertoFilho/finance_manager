@@ -1,12 +1,23 @@
 class Goal:
-    def __init__(self, name: str, user, deadline:str, target_amount: float, current_amount: float = 0.0, id = None):
+    def __init__(self, name: str, user, deadline:str, target_amount: float, current_amount = 0, id = None):
         self.id = id
         self._user = user
         self.name = name
         self.deadline = deadline
-        self.__target_amount = target_amount
-        self.__current_amount = current_amount
+        self.current_amount = current_amount
+        self.target_amount = target_amount
     
+    @property
+    def current_amount(self) -> float:
+        return self.__current_amount
+    
+    @current_amount.setter
+    def current_amount(self, value: float):
+        if value < 0:
+            raise ValueError("Valor da meta não pode ser negativo.")
+        
+        self.__current_amount = value
+
     @property
     def target_amount(self) -> float:
         return self.__target_amount

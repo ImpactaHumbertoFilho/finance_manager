@@ -1,6 +1,8 @@
 from domain.usecases.goal.add_goal_amount.add_goal_amount_input import AddGoalAmountInput
 from domain.usecases.goal.create_goal.create_goal_input import CreateGoalInput
 from domain.usecases.goal.update_goal.update_goal_input import UpdateGoalInput
+from domain.usecases.installment.create_installment_input import CreateInstallmentInput
+from domain.usecases.transaction.create_transaction.create_transaction_Input import CreateTransactionInput
 from domain.usecases.user.create_user.create_user_input import CreateUserInput
 from domain.usecases.user.delete_user.delete_user_input import DeleteUserInput
 from domain.usecases.user.update_user.update_user_input import UpdateUserInput
@@ -64,7 +66,7 @@ def handle_login(services):
     get_users_use_case = services['get_user_use_case']
     result = get_users_use_case.execute()
     for user in result.users:
-        if user.email == email:
+        if user.email == email and user.password == password:
             return user
 
 def handle_register(services):
@@ -147,6 +149,65 @@ def handle_get_goals(services, user):
 
     return result.goals
 
+def handle_get_transactions(services, user):
+    get_transactions_use_case = services['get_transactions_use_case']
+    result = get_transactions_use_case.execute(user.id)
+
+    return result.transactions
+
+def handle_create_transaction(services, user):
+    description = input("Digite a descrição da transação: ")
+    amount = float(input("Digite o valor da transação: "))
+    date = input("Digite a data da transação (YYYY-MM-DD): ")
+
+    print_sub_menu_box("Tipo da transação", ["Entrada", "Saída"], isLastSubMenu=False)
+    transaction_type = input("Digite o tipo da transação: ")
+
+    categories_menu(services)
+    category = input("Digite a categoria da transação: ")
+
+    #payment_methods_menu(services)
+    payment_method = input("Digite o método de pagamento da transação: ")
+
+
+
+    print_sub_menu_box("parcelas", ["À vista", "Parcelado"], isLastSubMenu= False)
+    installment_option = input("Digite a opção de parcelas: ")
+    if installment_option == '1':
+        installment = 1
+    elif installment_option == '2':
+        installment = int(input("Digite o número de parcelas: "))
+    else:
+        print("Opção inválida. Considerando como à vista.")
+        installment = 1
+
+    installments = []
+    for i in range(installment):
+        installment_amount = input(f"Digite o valor da parcela {i + 1}: ") if installment > 1 else amount
+        installment_input = CreateInstallmentInput(number = i+1, amount = installment_amount)
+        installments.append(installment_input)
+    
+    create_transaction_input = CreateTransactionInput(user_id=user.id, description=description, amount=amount, date=date, 
+        category_id=category, 
+        payment_method_id=payment_method,
+        installments=installments,
+        type=transaction_type
+    )
+    
+    create_transaction_use_case = services['create_transaction_use_case']
+    create_transaction_use_case.execute(create_transaction_input)
+
+
+def list_transactions(services, user):
+    transactions = handle_get_transactions(services, user)
+
+    if not transactions:
+        print_sub_menu_box("Suas transações", ["Nenhuma transação cadastrada ainda"], isLastSubMenu=False)
+        return
+
+    for transaction in transactions:
+        print(transaction)
+
 def start_menu():
     print_menu_box("Sistema de Gerenciamento Financeiro", "Escolha uma opção:", [
         "Login",
@@ -163,7 +224,7 @@ def index_menu(user):
 
 def goals_menu(services, user):
     goals = handle_get_goals(services, user)
-    print_sub_menu_box("Aqui estão suas metas", goals, isLastSubMenu=False)
+    print_sub_menu_box("Aqui estão suas metas", goals if len(goals) > 0 else ["Nenhuma meta cadastrada ainda"], isLastSubMenu=False)
     print_sub_menu_box(f"Selecione o que deseja fazer:", [
         "Adicionar meta",
         "Aletrar meta"
@@ -184,6 +245,18 @@ def transactions_menu():
         "Listar transações",
         "Gerar relatório",
     ])
+
+def categories_menu(services):
+    get_category_use_case = services['get_category_use_case']
+    categories_result = get_category_use_case.execute()
+
+    print_sub_menu_box("Categorias", categories_result.categories, isLastSubMenu=False)
+
+def payment_methods_menu(services):
+    get_payment_method_use_case = services['get_payment_method_use_case']
+    payment_methods_result = get_payment_method_use_case.execute()
+
+    print_sub_menu_box("Categorias", payment_methods_result.payment_methods, isLastSubMenu=False)
 
 def start_app(services):
     user = None
@@ -235,9 +308,19 @@ def start_app(services):
 
             elif option == '3':
                 while True:
-                    transactions_menu(services, user)
+                    transactions_menu()
                     try:
                         option = input("Digite a opção desejada: ")
+                        if option == '1':
+                            handle_create_transaction(services, user)
+                        elif option == '2':
+                            list_transactions(services, user)
+                        elif option == '3':
+                            print("Gerando relatório... (Funcionalidade não implementada)")
+                        elif option == '0':
+                            break
+                        else:
+                            print("Opção inválida. Tente novamente.")
 
                     except Exception as e:
                         print_error_menu_box("Erro ao realizar operações de transação", e)
