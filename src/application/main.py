@@ -1,8 +1,14 @@
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from application.interface import start_app
 
 from repositories.installment_repository import InstallmentRepository
 from repositories.transaction_repository import TransactionRepository
 from usecases.category.get_category_use_case import GetCategoryUseCase
+from usecases.payment_method.get_payment_method_use_case import GetPaymentMethodUseCase
 from usecases.user.create_user_use_case import CreateUserUseCase
 from usecases.user.delete_user_use_case import DeleteUserUseCase
 from usecases.user.get_user_use_case import GetUserUseCase
@@ -69,7 +75,8 @@ def install_services():
     
     #Payment_method Use Cases
     create_payment_method_use_case = CreatePaymentMethodUseCase(payment_method_repository)
-    
+    get_payment_method_use_case = GetPaymentMethodUseCase(payment_method_repository)
+
     return {
         'create_user_use_case': create_user_use_case,
         'update_user_use_case': update_user_use_case,
@@ -90,6 +97,7 @@ def install_services():
         'get_category_use_case': get_category_use_case,
 
         'create_payment_method_use_case': create_payment_method_use_case,
+        'get_payment_method_use_case': get_payment_method_use_case
     }
 
 def restart_database():

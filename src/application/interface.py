@@ -166,7 +166,7 @@ def handle_create_transaction(services, user):
     categories_menu(services)
     category = input("Digite a categoria da transação: ")
 
-    #payment_methods_menu(services)
+    payment_methods_menu(services)
     payment_method = input("Digite o método de pagamento da transação: ")
 
     print_sub_menu_box("parcelas", ["À vista", "Parcelado"], isLastSubMenu= False)
@@ -181,7 +181,7 @@ def handle_create_transaction(services, user):
 
     installments = []
     for i in range(installment):
-        installment_amount = input(f"Digite o valor da parcela {i + 1}: ") if installment > 1 else amount
+        installment_amount = float(input(f"Digite o valor da parcela {i + 1}: ")) if installment > 1 else amount
         installment_input = CreateInstallmentInput(number = i+1, amount = installment_amount)
         installments.append(installment_input)
     
@@ -194,7 +194,6 @@ def handle_create_transaction(services, user):
     
     create_transaction_use_case = services['create_transaction_use_case']
     create_transaction_use_case.execute(create_transaction_input)
-
 
 def list_transactions(services, user):
     transactions = handle_get_transactions(services, user)
@@ -253,7 +252,7 @@ def payment_methods_menu(services):
     get_payment_method_use_case = services['get_payment_method_use_case']
     payment_methods_result = get_payment_method_use_case.execute()
 
-    print_sub_menu_box("Categorias", payment_methods_result.payment_methods, isLastSubMenu=False)
+    print_sub_menu_box("Meios de pagamento", [payment.name for payment in payment_methods_result.payment_methods], isLastSubMenu=False)
 
 def start_app(services):
     user = None

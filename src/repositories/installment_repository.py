@@ -16,3 +16,5 @@ class InstallmentRepository:
     def add_many(self, installments):
         for installment in installments:
             self.add(installment)
+
+        return True
